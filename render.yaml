@@ -3,21 +3,21 @@ services:
     name: viakids-backend
     env:
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: DATABASE_URL
-        value: jdbc:postgresql://ep-fancy-dust-apsbu3se-pooler.c-7.us-east-1.aws.neon.tech:6543/neondb?sslmode=require
+        value: "jdbc:postgresql://ep-fancy-dust-apsbu3se-pooler.c-7.us-east-1.aws.neon.tech:6543/neondb?sslmode=require"
       - key: DATABASE_USERNAME
-        value: neondb_owner
+        value: "neondb_owner"
       - key: DATABASE_PASSWORD
-        value: npg_SABXo74LEZxh
+        value: "npg_SABXo74LEZxh"
       - key: JWT_SECRET
-        value: viaKidsSecretKey2026SuperSecureLongKeyForHS512SignatureAlgorithmMinimum512BitsRequired
+        value: "viaKidsSecretKey2026SuperSecureLongKeyForHS512SignatureAlgorithmMinimum512BitsRequired"
       - key: JWT_EXPIRATION
-        value: 86400000
+        value: "86400000"
       - key: CORS_ORIGINS
-        value: https://via-kids-capstone.vercel.app,http://localhost:5173
-    buildCommand: ./mvnw.cmd clean install -DskipTests
-    startCommand: java -jar target/viakids-backend-1.0.0.jar
+        value: "http://localhost:5173,https://via-kids-capstone.vercel.app"
+    buildCommand: "./mvnw.cmd clean install -DskipTests"
+    startCommand: "java -jar target/viakids-backend-1.0.0.jar"
     runtime: java21
     plan: starter
-    healthCheckPath: /
+    healthCheckPath: "/"
