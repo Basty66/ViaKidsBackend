@@ -1,15 +1,13 @@
 services:
   - type: web
     name: viakids-backend
-    env: java
+    env: docker
     plan: starter
     region: ohio
-    buildCommand: "chmod +x mvnw && ./mvnw clean install -DskipTests"
-    startCommand: "java -Dserver.port=${PORT:-3000} -jar target/viakids-backend-1.0.0.jar"
     healthCheckPath: "/"
     envVars:
-      - key: JAVA_VERSION
-        value: "21"
+      - key: PORT
+        value: "8080"
       - key: DATABASE_URL
         value: "jdbc:postgresql://ep-fancy-dust-apsbu3se-pooler.c-7.us-east-1.aws.neon.tech:6543/neondb?sslmode=require"
       - key: DATABASE_USERNAME
