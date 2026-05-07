@@ -36,6 +36,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/health").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
@@ -48,10 +50,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173",
-            "https://via-kids-capstone.vercel.app"
-        ));
+        String corsOrigins = System.getenv("CORS_ORIGINS");
+        if (corsOrigins != null && !corsOrigins.isEmpty()) {
+            configuration.setAllowedOrigins(Arrays.asList(corsOrigins.split(",")));
+        } else {
+            configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "https://via-kids-capstone.vercel.app"
+            ));
+        }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
