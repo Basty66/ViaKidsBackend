@@ -1,22 +1,28 @@
 services:
   - type: web
     name: viakids-backend
-    env: docker
+    env: python
     plan: starter
     region: ohio
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn viakids_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
     healthCheckPath: "/"
     envVars:
-      - key: PORT
-        value: "8080"
+      - key: DJANGO_SETTINGS_MODULE
+        value: "viakids_backend.settings"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "viakids-backend.onrender.com,localhost,127.0.0.1"
+      - key: CORS_ORIGINS
+        value: "http://localhost:5173,https://via-kids-capstone.vercel.app"
+      - key: JWT_SECRET
+        value: "viaKidsSecretKey2026SuperSecureLongKeyForHS512SignatureAlgorithmMinimum512BitsRequired"
+      - key: JWT_EXPIRATION
+        value: "86400000"
       - key: DATABASE_URL
         value: "jdbc:postgresql://ep-fancy-dust-apsbu3se-pooler.c-7.us-east-1.aws.neon.tech:6543/neondb?sslmode=require"
       - key: DATABASE_USERNAME
         value: "neondb_owner"
       - key: DATABASE_PASSWORD
         value: "npg_SABXo74LEZxh"
-      - key: JWT_SECRET
-        value: "viaKidsSecretKey2026SuperSecureLongKeyForHS512SignatureAlgorithmMinimum512BitsRequired"
-      - key: JWT_EXPIRATION
-        value: "86400000"
-      - key: CORS_ORIGINS
-        value: "http://localhost:5173,https://via-kids-capstone.vercel.app"
+      - key: DJANGO_SECRET_KEY
+        value: "django-insecure-viakids-secret-key-change-in-production"
