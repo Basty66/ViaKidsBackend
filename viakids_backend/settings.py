@@ -54,22 +54,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'viakids_backend.wsgi.application'
 
-# Database - uses environment variables like Spring Boot
+# Database - handles both JDBC URLs (Spring Boot format) and standard Postgres URLs
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 if DATABASE_URL and DATABASE_URL.startswith('jdbc:'):
-    jdbc_url = DATABASE_URL.replace('jdbc:', '')
+    jdbc_url = DATABASE_URL[5:]  # remove 'jdbc:'
+    url_no_params = jdbc_url.split('?')[0]  # remove query params
     import re
-    match = re.match(r'postgresql://([^:]+):([^@]+)@(.+):(\d+)/([^?]+)', jdbc_url.split('?')[0])
+    match = re.match(r'postgresql://(?:([^:]+):([^@]+)@)?(.+):(\d+)/(.+)', url_no_params)
     if match:
         db_user, db_pass, db_host, db_port, db_name = match.groups()
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql',
                 'NAME': db_name,
-                'USER': db_user,
-                'PASSWORD': db_pass,
+                'USER': db_user or os.environ.get('DATABASE_USERNAME', 'postgres'),
+                'PASSWORD': db_pass or os.environ.get('DATABASE_PASSWORD', 'postgres'),
                 'HOST': db_host,
-                'PORT': db_port,
+                'PORT': int(db_port),
                 'OPTIONS': {'sslmode': 'require'},
             }
         }
@@ -82,6 +83,22 @@ if DATABASE_URL and DATABASE_URL.startswith('jdbc:'):
                 'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
                 'HOST': os.environ.get('DATABASE_HOST', 'localhost'),
                 'PORT': os.environ.get('DATABASE_PORT', '5432'),
+            }
+        }
+elif DATABASE_URL and DATABASE_URL.startswith('postgresql://'):
+    import re
+    match = re.match(r'postgresql://([^:]+):([^@]+)@(.+):(\d+)/([^?]+)', DATABASE_URL.split('?')[0])
+    if match:
+        db_user, db_pass, db_host, db_port, db_name = match.groups()
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': db_name,
+                'USER': db_user,
+                'PASSWORD': db_pass,
+                'HOST': db_host,
+                'PORT': int(db_port),
+                'OPTIONS': {'sslmode': 'require'},
             }
         }
 else:

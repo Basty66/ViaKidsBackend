@@ -4,7 +4,7 @@ services:
     env: python
     plan: starter
     region: ohio
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py seed_data"
     startCommand: "gunicorn viakids_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
     healthCheckPath: "/"
     envVars:
