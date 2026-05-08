@@ -28,3 +28,13 @@ class Command(BaseCommand):
                 role='DRIVER'
             )
             self.stdout.write(self.style.SUCCESS('Driver user created: driver@viakids.cl / driver123'))
+
+        if not User.objects.filter(email='apoderado@viakids.cl').exists():
+            User.objects.create_user(
+                email='apoderado@viakids.cl',
+                password='apoderado123',
+                first_name='Maria',
+                last_name='Lopez',
+                role='PARENT'
+            )
+            self.stdout.write(self.style.SUCCESS('Parent user created: apoderado@viakids.cl / apoderado123'))
